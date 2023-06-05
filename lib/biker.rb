@@ -28,7 +28,7 @@ class Biker
         end
     end
 
-    def personal_record(ride)
-        @rides[ride].min_by {|value| value.abs}
+    def personal_record(ride)    
+            @rides[ride].min {|value| value.abs}
     end
 end
