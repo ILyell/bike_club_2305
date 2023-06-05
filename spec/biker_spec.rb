@@ -1,5 +1,7 @@
 require 'rspec'
 require './lib/biker'
+require './lib/ride'
+require 'pry'
 
 RSpec.describe Biker do
     before(:each) do
@@ -38,9 +40,9 @@ RSpec.describe Biker do
         it 'takes an symbol argument and adds it the the back of acceptable_terrain array' do
             
             expect(@biker.acceptable_terrain).to eq([])
-            biker.learn_terrain!(:gravel)
+            @biker.learn_terrain!(:gravel)
             expect(@biker.acceptable_terrain).to eq([:gravel])
-            biker.learn_terrain!(:hills)
+            @biker.learn_terrain!(:hills)
             expect(@biker.acceptable_terrain).to eq([:gravel, :hills])
 
         end
@@ -53,10 +55,6 @@ RSpec.describe Biker do
             expect(@biker.rides).to eq({})
             @biker.log_ride(@ride1, 92.5)
             expect(@biker.rides).to eq({@ride1 => [92.5]})
-
-            expect(@biker2.rides).to eq({})
-            @biker2.log_ride(@ride1, 97.0)
-            expect(@biker2.rides).to eq({@ride1 => [97.0]})
         end
 
         it 'returns a string if terrain not known by biker' do
@@ -85,7 +83,7 @@ RSpec.describe Biker do
             expect(@biker2.log_ride(@ride1, 97.0)).to eq(false)
             @biker2.learn_terrain!(:hills)
             expect(@biker2.log_ride(@ride1, 97.0)).to eq(false)
-            expect(@biker.rides).to eq({})
+            expect(@biker2.rides).to eq({})
 
         end
 
@@ -102,11 +100,13 @@ RSpec.describe Biker do
             @biker.log_ride(@ride1, 91.1)
             expect(@biker.rides).to eq({@ride1 => [92.5, 91.1]})
             
+            @biker2.learn_terrain!(:gravel)
+            @biker2.learn_terrain!(:hills)
             expect(@biker2.rides).to eq({})
-            @biker2.log_ride(@ride1, 97.0)
-            expect(@biker2.rides).to eq({@ride1 => [97.0]})
-            @biker2.log_ride(@ride1, 95.0)
-            expect(@biker2.rides).to eq({@ride1 => [97.0, 95.0]})
+            @biker2.log_ride(@ride1, 96.0)
+            expect(@biker2.rides).to eq({})
+            @biker2.log_ride(@ride2, 65.0)
+            expect(@biker2.rides).to eq({@ride2 => [65.0]})
 
         end
     end
@@ -119,15 +119,14 @@ RSpec.describe Biker do
 
             @biker.log_ride(@ride1, 92.5)
             @biker.log_ride(@ride1, 91.1)
+
             @biker.log_ride(@ride2, 60.9)
             @biker.log_ride(@ride2, 61.6)
+            
+            expect(@biker.rides).to eq({@ride1 => [92.5, 91.1], @ride2 => [60.9, 61.6]})
 
             expect(@biker.personal_record(@ride1)).to eq(91.1)
             expect(@biker.personal_record(@ride2)).to eq(60.9)
-
-            @biker2.learn_terrain!(:gravel)
-            @biker2.learn_terrain!(:hills)
-
 
         end
     end
